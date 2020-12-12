@@ -1,8 +1,11 @@
 # CLAMP CALCULATOR
 
-=======
+CLAMP CALCULATOR is a web based application for a CLAMP data calculation.
+The calculation method and all the photos are from http://clamp.ibcas.ac.cn
+
+
 Installation
-------------
+--------
 
 Download the repository and extract folder.
 
@@ -19,6 +22,3 @@ Install requirements::
 Run the application::
 
     python3 main.py
-
-
-All the photos are from http://clamp.ibcas.ac.cn
