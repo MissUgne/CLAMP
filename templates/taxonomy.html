@@ -1,3 +1,21 @@
+<!--
+    <CLAMP CALCULATOR. Web based application for a CLAMP data calculation>
+    Copyright (C) 2020  Ugne Gliaudelyte
+
+    CLAMP CALCULATOR is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    CLAMP CALCULATOR is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with CLAMP CALCULATOR.  If not, see <https://www.gnu.org/licenses/>.
+-->
+
 {% extends "layout.html" %}
 {% block content %}
     <div>
@@ -8,33 +26,27 @@
         <form method="POST" class="marg10">
 
             <div class="inline border padd5">
-                <p>Enter row:</p>
-                <input type="text" name="row" placeholder="Row"><br>
-                <p>Enter column:</p>
-                <input type="text" name="column" placeholder="Column"><br>
-                <p>Enter drawer:</p>
-                <input type="text" name="drawer" placeholder="Drawer"><br>
-                <p>Enter FMHN:</p>
-                <input type="text" name="fmhn" placeholder="FMHN"><br>
+                <p>Enter FMHN Number:</p>
+                <input type="text" name="fmhn" placeholder="FMHN No"><br>
             </div>
 
-            <div  class="inline border padd5">
-            <label class="anchor">Flora:</label>
-            <select name="flora" class="check-list">
-                <option value="{{ flora.no }}">{{ flora.no }}</option>
-                <option value="{{ flora.bh }}">{{ flora.bh }}</option>
-                <option value="{{ flora.cf }}">{{ flora.cf }}</option>
-                <option value="{{ flora.mc }}">{{ flora.mc }}</option>
-            </select><br>
+<!--            <div  class="inline border padd5">-->
+<!--            <label class="anchor">Flora:</label>-->
+<!--            <select name="flora" class="check-list">-->
+<!--                <option value="{{ flora.no }}">{{ flora.no }}</option>-->
+<!--                <option value="{{ flora.bh }}">{{ flora.bh }}</option>-->
+<!--                <option value="{{ flora.cf }}">{{ flora.cf }}</option>-->
+<!--                <option value="{{ flora.mc }}">{{ flora.mc }}</option>-->
+<!--            </select><br>-->
 
-            <label class="anchor">Specimen:</label>
-            <select name="spec" class="check-list">
-                <option value="{{ specimen.no }}">{{ specimen.no }}</option>
-                <option value="{{ specimen.sp1 }}">{{ specimen.sp1 }}</option>
-                <option value="{{ specimen.sp2 }}">{{ specimen.sp2 }}</option>
-                <option value="{{ specimen.sp3 }}">{{ specimen.sp3 }}</option>
-            </select>
-            </div><br>
+<!--            <label class="anchor">Specimen:</label>-->
+<!--            <select name="spec" class="check-list">-->
+<!--                <option value="{{ specimen.no }}">{{ specimen.no }}</option>-->
+<!--                <option value="{{ specimen.sp1 }}">{{ specimen.sp1 }}</option>-->
+<!--                <option value="{{ specimen.sp2 }}">{{ specimen.sp2 }}</option>-->
+<!--                <option value="{{ specimen.sp3 }}">{{ specimen.sp3 }}</option>-->
+<!--            </select>-->
+<!--            </div><br>-->
             <input type='reset' value="UNCHECK ALL"/>
             <input type="submit" value="Submit"><br>
         </form>

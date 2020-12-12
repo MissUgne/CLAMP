@@ -1,15 +1,33 @@
+#     <CLAMP CALCULATOR. Web based application for a CLAMP data calculation>
+#     Copyright (C) 2020  Ugne Gliaudelyte
+#
+#     CLAMP CALCULATOR is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     CLAMP CALCULATOR is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#
+#     You should have received a copy of the GNU General Public License
+#     along with CLAMP CALCULATOR.  If not, see <https://www.gnu.org/licenses/>.
+#
+
 from flask import Flask, render_template, redirect, request, url_for
 import os
 from csv import DictWriter
 
-
 app = Flask(__name__)
-
 
 @app.route('/')
 def home():
     return render_template('index.html')
 
+@app.route('/about')
+def about():
+    return render_template('about.html')
 
 flora = {
     'no': 'None',
@@ -25,20 +43,12 @@ specimen = {
     'sp3': 'Radstockia kidstonii',
 }
 
-# !! Add more flora and specimen.
-# !! Add this section to CSV
-
-
 @app.route('/taxonomy', methods=['GET', 'POST'])
 def taxonomy():
     if request.method == 'POST':
-        flo = request.form['flora']
-        spec = request.form['spec']
-        row = request.form['row']
-        column = request.form['column']
-        drawer = request.form['drawer']
         numb = request.form['fmhn']
-        print(spec + flo + row + column + drawer + numb)
+        result.update({'FMHN No': numb})
+        print(numb)
         return redirect(url_for('lobing', scores=scores))
     return render_template('taxonomy.html', specimen=specimen, flora=flora)
 
@@ -58,9 +68,6 @@ result = {
 
 # 1. Lobing: 6 photos
 # 0 if no leaves are lobed; 1 if all leaves lobed
-# !! no photos for 0.5 (some leaves are lobed and some not)!!
-
-
 @app.route('/lobing', methods=['GET', 'POST'])
 def lobing():
     if request.method == 'POST':
@@ -71,9 +78,6 @@ def lobing():
 
 
 # 2. Leaf margin: 7 different shapes (if one of first three selected, moves to 3)
-# !!! No photo selection for 0.5 - some toothed and some not!!!
-
-
 @app.route('/margin', methods=['GET', 'POST'])
 def margin():
     if request.method == 'POST':
@@ -83,13 +87,16 @@ def margin():
             return redirect(url_for('regular', scores=scores))
         else:
             result.update({'Margin': 1})
+            result.update({'Regularity': 0})
+            result.update({'Closeness': 0})
+            result.update({'Teethshape': 0})
+            result.update({'Acute': 0})
+            result.update({'Compound': 0})
             return redirect(url_for('apex', scores=scores))
     return render_template('margin.html', scores=scores)
 
 
 #   2.1 Regularity of teeth: 4 photos
-
-
 @app.route('/regular', methods=['GET', 'POST'])
 def regular():
     if request.method == 'POST':
@@ -100,8 +107,6 @@ def regular():
 
 
 #   2.2. Closeness of teeth: 4 photos
-
-
 @app.route('/close', methods=['GET', 'POST'])
 def close():
     if request.method == 'POST':
@@ -112,8 +117,6 @@ def close():
 
 
 #   2.3. Teeth rounded and (or) appressed: 4 photos
-
-
 @app.route('/teethshape', methods=['GET', 'POST'])
 def teethshape():
     if request.method == 'POST':
@@ -124,8 +127,6 @@ def teethshape():
 
 
 #   2.4 Acute: 2 photos
-
-
 @app.route('/acute', methods=['GET', 'POST'])
 def acute():
     if request.method == 'POST':
@@ -136,7 +137,6 @@ def acute():
 
 
 #   2.5. Teeth compound: 2 photos
-
 @app.route('/compound', methods=['GET', 'POST'])
 def compound():
     if request.method == 'POST':
@@ -148,7 +148,6 @@ def compound():
 
 
 # 3. Apex Form: 16 photos
-
 @app.route('/apex', methods=['GET', 'POST'])
 def apex():
     if request.method == 'POST':
@@ -170,13 +169,15 @@ def apex():
             finalapex = 0.33
             print('Apex score: ' + str(finalapex))
             result.update({'Apex': finalapex})
+        elif totalapex == 0:
+            finalapex = 0
+            print('Apex score: ' + str(finalapex))
+            result.update({'Apex': finalapex})
         return redirect(url_for('base', scores=scores))
     return render_template('apex.html', scores=scores)
 
 
 # 4. Base Form: 12 photos
-
-
 @app.route('/base', methods=['GET', 'POST'])
 def base():
     if request.method == 'POST':
@@ -194,13 +195,14 @@ def base():
         elif totalbase == 3:
             finalbase = 0.33
             result.update({'Base': finalbase})
+        elif totalbase == 0:
+            finalbase = 0
+            result.update({'Base': finalbase})
         return redirect(url_for('shape', scores=scores))
     return render_template('base.html', scores=scores)
 
 
 # 5. Shape: 11 photos
-
-
 @app.route('/shape', methods=['GET', 'POST'])
 def shape():
     if request.method == 'POST':
@@ -217,16 +219,17 @@ def shape():
         elif totalshape == 3:
             finalshape = 0.33
             result.update({'Shape': finalshape})
+        elif totalshape == 0:
+            finalshape = 0
+            result.update({'Shape': finalshape})
         return redirect(url_for('ratio', scores=scores))
     return render_template('shape.html', scores=scores)
 
 
 # 6. Length-to-width ratio
-
-
 @app.route('/ratio', methods=['GET', 'POST'])
 def ratio():
-    global testratio, testratio2, testratio3
+    global  testratio, testratio2, testratio3
     if request.method == 'POST':
         finalratio = []
         length = int(request.form['length'])
@@ -295,8 +298,6 @@ def ratio():
 
 
 # 7. Leaf size
-
-
 @app.route('/size', methods=['GET', 'POST'])
 def size():
     if request.method == 'POST':
@@ -340,12 +341,8 @@ def final():
     return render_template('final.html', result=result)
 
 
-# Create filename from the upload
-
-
 file_name = 'scores.csv'
 file_exists = os.path.isfile(file_name)
-
 
 @app.route('/csv', methods=['GET', 'POST'])
 def csv():
@@ -360,9 +357,9 @@ def csv():
             # Add dictionary as a row
             dict_writer.writerow(dict_of_elem)
 
-
+    # ! ADD IRN FROM DATABASE
     def main():
-        field_names = ['Lobing', 'Margin', 'Regularity', 'Closeness', 'Teethshape', 'Acute', 'Compound', 'Apex', 'Base',
+        field_names = ['IRN', 'FMHN No', 'Lobing', 'Margin', 'Regularity', 'Closeness', 'Teethshape', 'Acute', 'Compound', 'Apex', 'Base',
                        'Shape', 'Ratio', 'Size']
         row_dict = result
         # Append a dict as a row in csv file
@@ -377,18 +374,18 @@ def csv():
 
 @app.errorhandler(500)
 def internal_error(error):
-    return render_template('error_500.html')
+    return render_template('error.html')
 
 
 @app.errorhandler(404)
 def internal_error(error):
-    return render_template('error_500.html')
+    return render_template('error.html')
 
 
 @app.errorhandler(400)
 def internal_error(error):
-    return render_template('error_500.html')
+    return render_template('error.html')
 
 
 if __name__ == '__main__':
-    app.run(port=5002)
+    app.run()
